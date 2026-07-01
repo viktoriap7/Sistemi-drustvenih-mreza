@@ -41,9 +41,9 @@ class Trie:
         """ gleda prefiks i smanjuje ga dok ne nadje dovoljno 
          korisnika kao predlozene """
         tren = prefiks
-        lista_rez = [] # Користимо листу да сачувамо редослед
-        vidjeni = set() # Сет користимо само за брзу проверу дупликата
-        
+        lista_rez=[] 
+        vidjeni = set()
+
         while len(tren) > 1:
             tren = tren[:-1]
             novi_rez = self.autocomplete(tren, graf)
@@ -56,4 +56,12 @@ class Trie:
             if len(lista_rez) > 4:
                 break               
         return lista_rez
+    def vrati_usera(self,ime):
+        tren=self.root
+        for slovo in ime.lower():
+            if slovo not in tren._djeca:
+                return None
+            tren=tren._djeca[slovo]
+        
+        return tren._user
     #def pronadji_od_prefiksa(self,)

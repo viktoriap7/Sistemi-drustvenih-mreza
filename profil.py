@@ -44,14 +44,24 @@ x)odustani''')
                     if len(prefiks)>1:
                         print("d")
                         rez=trie.did_you_mean(prefiks,graf)
-                    else:
+                    if len(rez)==0:
                         print("a")
                         rez=trie.autocomplete('',graf)
-                i=1
-                for user in rez:
-                    print(str(i)+')'+str(user))
-                    i+=1
-
+                user=izbor_ponudjenih(rez)
+                return user
+            else:
+                user=trie.vrati_usera(unos)
+                if user is not None:
+                    return user
+                print("Da li ste mislili na: ")
+                if len(unos)>1:
+                    print("d")
+                    rez=trie.did_you_mean(unos,graf)
+                if len(rez)==0:
+                    print("a")
+                    rez=trie.autocomplete('',graf)
+                user=izbor_ponudjenih(rez)
+                return user
         elif a=='2':
             pass
         elif a=='x':
@@ -59,5 +69,32 @@ x)odustani''')
         else:
             print("Geska u unosu")
 
+def izbor_ponudjenih(rez):
+    i=1
+    for user in rez:
+        print(str(i)+')'+str(user))
+        i+=1
+    izbor=input("\nUnesite redni broj zeljenog profila (x za odustajanje)").strip()
+    if izbor.isdigit():
+        indeks=int(izbor)-1
+        if 0<=indeks<len(rez):
+            return rez[indeks]
+        else:
+            print("Greska u unosu")    
+    print("Odustjanje")
+    return None
+def profil_meni(graf,trie,user):
     
-    
+    while True:
+        print("\n\n")
+        print(user)
+        print('''==========================
+1)lalalal
+x)exit''')
+        a=input().strip()
+        if a=='1':
+            pass
+        elif a=='x':
+            break
+        else:
+            print("Greska u unosu")

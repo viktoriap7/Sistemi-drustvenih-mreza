@@ -34,7 +34,11 @@ x)exit
 """)
         a=input().strip()
         if a=='1':
-            pretraga(graf,trie)
+            user=pretraga(graf,trie)
+            if user is not None:
+                profil_meni(graf,trie,user)
+            else:
+                print("user je none")
         elif a=='2':
             poc_vrijeme=time.time()
             lista=list(graf._pagerank.keys())
