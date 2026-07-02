@@ -40,12 +40,12 @@ class Trie:
     def did_you_mean(self,prefiks,graf):
         """ gleda prefiks i smanjuje ga dok ne nadje dovoljno 
          korisnika kao predlozene """
+        print("..........")
         tren = prefiks
         lista_rez=[] 
         vidjeni = set()
-
-        while len(tren) > 1:
-            tren = tren[:-1]
+        print('\t'+str(prefiks))
+        while len(tren) > 0:
             novi_rez = self.autocomplete(tren, graf)
             
             for user in novi_rez:
@@ -54,7 +54,9 @@ class Trie:
                     vidjeni.add(user)
             
             if len(lista_rez) > 4:
-                break               
+                break
+            tren = tren[:-1]
+                           
         return lista_rez
     def vrati_usera(self,ime):
         tren=self.root

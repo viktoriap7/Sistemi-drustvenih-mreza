@@ -36,12 +36,13 @@ x)odustani''')
         a=input().strip()
         if a=='1':
             unos=input('Unesite ime: ').strip()
+            rez = []
             if unos.endswith('*'):
                 prefiks=unos[:-1]
                 rez=trie.autocomplete(prefiks,graf)
                 if len(rez)==0: 
                     print("Da li ste mislili na: ")
-                    if len(prefiks)>1:
+                    if len(prefiks)>0:
                         print("d")
                         rez=trie.did_you_mean(prefiks,graf)
                     if len(rez)==0:
@@ -54,7 +55,7 @@ x)odustani''')
                 if user is not None:
                     return user
                 print("Da li ste mislili na: ")
-                if len(unos)>1:
+                if len(unos)>0:
                     print("d")
                     rez=trie.did_you_mean(unos,graf)
                 if len(rez)==0:
