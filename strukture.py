@@ -1,9 +1,11 @@
+import re
 class User:
     def __init__(self,id,ime,bio):
         self._id=id
         self._ime=ime
         self._bio=bio
         self._pagerank=0
+        self._rijeci={}
     def __str__(self):
         return str(self._id)+" | "+str(self._ime)
 class Cvor:
@@ -41,12 +43,14 @@ class Graf:
         self._blokirani={}
         self._pagerank={}
         self._user_to_cvor={}
+        #kljucevi useri vrijednost cvor grafa za tog usera
+        self._inverted_indeks={}
+        #kljuc rijec vrijednosti set usera koji imaju tu rijec u bio
     def pocetni_pagerank(self):
         n=self.broj_cvorova()
         vrijednost=1.0/n
         for cvor in self._izlazni:
             self._pagerank[cvor]=vrijednost
-        
         
     def izracunaj_pagerank(self,d=0.85,e=1e-6):
         teleport=(1-d)/self.broj_cvorova()
@@ -119,6 +123,10 @@ class Graf:
         self._izlazni[v]=set()
         self._ulazni[v]=set()
         self._user_to_cvor[x]=v
+        for rijec in x._rijeci.keys():
+            if rijec not in self._inverted_indeks:
+                self._inverted_indeks[rijec]=set()
+            self._inverted_indeks[rijec].add(x) 
         #return v
     def dodaj_pracenje(self,u,v):
         """ prvi prati drugog """

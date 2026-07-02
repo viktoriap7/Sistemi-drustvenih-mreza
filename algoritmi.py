@@ -1,4 +1,5 @@
 import heapq
+import re
 from strukture import Graf,Cvor
 
 class Trie_cvor:
@@ -66,4 +67,12 @@ class Trie:
             tren=tren._djeca[slovo]
         
         return tren._user
+def izdvoj_rijeci(tekst):
+    """ iz teksta pravi skupove rijeci u rijecniku: 
+    kljuc rijec vrijednost broj pojavljivanja"""
+    skup_rijeci={}
+    rijeci=re.findall(r'\w+',tekst.lower())
+    for r in rijeci:
+        skup_rijeci[r]=skup_rijeci.get(r,0)+1
+    return skup_rijeci
     #def pronadji_od_prefiksa(self,)
