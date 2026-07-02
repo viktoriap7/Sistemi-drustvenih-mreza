@@ -1,4 +1,6 @@
+import copy
 import re
+from collections import deque
 class User:
     def __init__(self,id,ime,bio):
         self._id=id
@@ -19,6 +21,10 @@ class Cvor:
         return hash(id(self))
     def __str__(self):
         return str(self._element)
+    def __eq__(self, other):
+        if isinstance(other, Cvor):
+            return self._element._id == other._element._id
+        return False
 class Grana:
     def __init__(self,u,v):
         self._pocetak=u
@@ -70,6 +76,29 @@ class Graf:
             self._pagerank=novi_pr
             if razlika<e:
                 break
+    def izracunaj_ppr(self,poc_cvor,d=0.85,e=1e-6):
+        ppr_ocjene = {cvor: self._pagerank.get(cvor, 0.0) for cvor in self._izlazni}
+        while True:
+            novi_ppr={}
+            razlika=0
+            #print(f"Broj čvorova u grafu: {len(self._izlazni)}")
+            #print(f"Broj čvorova u ppr_ocjene: {len(ppr_ocjene)}")
+            for cvor in self._izlazni:
+                #print(ppr_ocjene[cvor])
+                if cvor==poc_cvor:
+                    ppr_cvor=1-d
+                else:
+                    ppr_cvor=0
+                for ulazni_cvor in self._ulazni[cvor]:
+                    broj_izlaza=len(self._izlazni[ulazni_cvor])
+                    if broj_izlaza>0:
+                        ppr_cvor+=d*(ppr_ocjene[ulazni_cvor]/broj_izlaza)
+                novi_ppr[cvor]=ppr_cvor
+                razlika+=abs(novi_ppr[cvor]-ppr_ocjene[cvor])
+            ppr_ocjene=novi_ppr
+            if razlika<e:
+                break
+        return ppr_ocjene
     def dobij_pagerank_za_cvor(self,cvor):
         return self._pagerank[cvor]
 
@@ -93,20 +122,6 @@ class Graf:
         return len(self._izlazni)
     def cvorovi_izlani(self):
         return self._izlazni.keys()
-    """ def broj_grana(self):
-        total=sum(len(self._izlazni[v]) for v in self._izlazni)
-        return total
-    def grane(self):
-        rez=set()
-        for lista in self._izlazni.values():
-            rez.update(lista.values())
-        return rez
-    def dobij_granu(self,v,u):
-        if(self.pripada_cvor(v) and self.pripada_cvor(u)):
-            
-            return self._izlazni[v].get(u)
-        print("\t nisu cvorovi")
-        return None """
     def stepen(self,v,izlazni=True):
         if self.pripada_cvor(v):
             adj=self._izlazni if izlazni else self._ulazni
@@ -138,3 +153,20 @@ class Graf:
                 self._ulazni[v].add(u)
         else:
             print("\t pracenje vec postoji")
+    def obilazak_grafa(self,poc_cvor,dubina):
+        posjeceni={poc_cvor:0}
+        red=deque([poc_cvor])
+        rez=[]
+
+        while red:
+            tren=red.popleft()
+            td=posjeceni[tren]
+
+            if td<=dubina:
+                for dijete in self._izlazni[tren]:
+                    if dijete not in posjeceni:
+                        posjeceni[dijete]=td+1
+                        red.append(dijete)
+                        rez.append((dijete,td+1))
+        return rez
+    

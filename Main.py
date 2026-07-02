@@ -8,7 +8,7 @@ def main():
     small='small'
     medium='medium'
     full='full'
-    izabrani='dataset/'+full+'/'
+    izabrani='dataset/'+small+'/'
     trie=Trie()
     graf=Graf()
     ucitaj_podatke(graf,trie,izabrani+'users.txt',
@@ -26,8 +26,7 @@ Meni:
 ========================
 1)pretraga
 2)prikaz najuticajnijih
-3)dodaj pracenje
-4)prikaz istorije
+3)prikaz istorije
 x)exit
 
 

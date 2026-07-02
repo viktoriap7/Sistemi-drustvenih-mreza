@@ -136,7 +136,21 @@ def cosine_slicnost(skup1,skup2):
     imenilac= math.sqrt(zskup1*zskup2)
     if imenilac==0:
         return 0.0
-    return zbir/imenilac  
+    return zbir/imenilac
+def dobij_preporuke(graf,poc_cvor,alfa=0.7):
+    ppr_ocjene=graf.izracunaj_ppr(poc_cvor)
+    user=poc_cvor._element
+    kandidati=[]
+    for cvor in graf._izlazni:
+        if cvor==poc_cvor:continue
+        if cvor in graf._izlazni[poc_cvor]:continue
+        if graf.provjeri_blok(poc_cvor,cvor):continue
+
+        ppr=ppr_ocjene.get(cvor,0)
+        slicnost=cosine_slicnost(user._rijeci,cvor._element._rijeci)
+        ocjena=alfa*ppr+(1-alfa)*slicnost
+        kandidati.append((cvor,ocjena))
+    return heapq.nlargest(10,kandidati,key=lambda x:x[1])  
 def profil_meni(graf,trie,user):
     
     while True:
@@ -145,11 +159,36 @@ def profil_meni(graf,trie,user):
         print(".....................")
         print(user._element._bio)
         print('''==========================
-1)lalalal
+1)obilazak grafa po pracenju
+2)prikaz predlozenih
 x)exit''')
         a=input().strip()
         if a=='1':
-            pass
+            unos=input("Unesite dubinu: ").strip()
+            if unos.isdigit():
+                dubina=(int)(unos)    
+                #poc_cvor=graf._user_to_cvor[user]
+                rez=graf.obilazak_grafa(user,dubina)
+                for i in range(1,dubina+1):
+                    print("Nivo "+str(i)+":")
+                    for cvor,d in rez:
+                        if d==i:
+                            print(cvor)
+            else:
+                print("Greska u unosu")
+        elif a=='2':
+            try:
+                unos=input("Unesite alfa [0-1]: ")
+                alfa=float(unos) if unos else 0.7
+            except:
+                alfa=0.7
+            predlozeni=dobij_preporuke(graf,user,alfa)
+            samo_useri = [element[0] for element in predlozeni]
+            izabran=izbor_ponudjenih(samo_useri)
+            if izabran is not None:
+                graf.dodaj_pracenje(user,izabran)
+                print("\n Zapratili ste: ",end='')
+                print(izabran)
         elif a=='x':
             break
         else:
